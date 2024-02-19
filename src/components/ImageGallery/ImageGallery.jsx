@@ -1,13 +1,19 @@
 import css from "./ImageGallery.module.css";
+import { ImageCard } from "../ImageCard";
 
-import { ImageCard } from "../ImageCard/ImageCard";
-
-export const ImageGallery = ({ items }) => (
-  <ul className={css.list}>
-    {items.map((item) => (
-      <li key={item.id} className={css.item}>
-        <ImageCard item={item} />
-      </li>
-    ))}
-  </ul>
-);
+export const ImageGallery = ({ fechResult, onClick }) => {
+  return (
+    <ul className={css.photoCard}>
+      {fechResult.map((item) => (
+        <li
+          key={item.id}
+          onClick={() => {
+            onClick(item);
+          }}
+        >
+          <ImageCard param={item} />
+        </li>
+      ))}
+    </ul>
+  );
+};

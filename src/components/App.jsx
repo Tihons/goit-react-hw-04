@@ -1,35 +1,91 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import css from "./App.module.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { SearchForm } from "./SearchForm/SearchForm";
+import { useEffect, useState } from "react";
+import { ImageGallery } from "./ImageGallery/ImageGallery";
+import { Loader } from "./Loader/Loader";
+import { Toaster } from "react-hot-toast";
+import { LoadMoreBtn } from "./LoadMoreBtn/LoadMoreBtn";
+import { nanoid } from "nanoid";
+import { feach } from "./api";
+import Modal from "react-modal";
+import { ImageModal } from "./ImageModal/ImageModal";
+import { ErrorMessage } from "./ErrorMessage/ErrorMessage";
+
+Modal.setAppElement("#root");
+
+export const App = () => {
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+  const [dataModal, setDataModal] = useState([]);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
+
+  const searchImages = async (newQuery) => {
+    setQuery(`${nanoid()}/${newQuery}`);
+    setIsOpen(false);
+    setLoading(true);
+    setDataModal([]);
+    setTotalPage(0);
+    setError(false);
+    setData([]);
+    setPage(1);
+  };
+
+  const handleLoadMore = () => {
+    setPage(page + 1);
+  };
+  const openModal = (items) => {
+    setDataModal(items);
+    setIsOpen(true);
+  };
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    if (query === "") {
+      return;
+    }
+
+    async function fechData() {
+      try {
+        const fechedData = await feach(query.split("/")[1], page);
+
+        setData([...data, ...fechedData.results]);
+        setTotalPage(fechedData.total_pages);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fechData();
+  }, [query, page]);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <SearchForm onSearch={searchImages} />
+      {error && <ErrorMessage />}
+      {data.length > 0 && (
+        <ImageGallery fechResult={data} onClick={openModal} />
+      )}
+      {loading && <Loader />}
+      {data.length > 0 && !loading && totalPage !== page && (
+        <LoadMoreBtn onClick={handleLoadMore} />
+      )}
+      <Toaster position="bottom-center" reverseOrder={false} />
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Example Modal"
+        className={css.modalWindow}
+      >
+        <ImageModal fechResult={dataModal} />
+      </Modal>
     </>
-  )
-}
-
-export default App
+  );
+};

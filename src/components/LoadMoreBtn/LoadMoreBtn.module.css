@@ -1,20 +1,21 @@
-.loadMore {
+.LoadMoreBtnBox {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 50px;
-  background-color: #585757c5;
+}
+.LoadMoreBtnBox > button {
+  padding: 10px 35px;
+
+  color: #7c7c7c;
+  border: 2px solid #7c7c7c;
+  border-radius: 3px;
+  background-color: white;
+  box-shadow: 3px 3px 0px #7c7c7c;
+
+  transition: all 200ms ease-in-out;
 }
 
-.loadMoreBtn {
-  width: 120px;
-  height: 50px;
-  text-align: center;
-  border-radius: 5px;
-  transition: all 0.3s ease;
-}
-
-.loadMoreBtn:hover {
-  background-color: #191ce4;
-  color: #ffff;
+.headerForm > button:hover {
+  transform: translateX(3px) translateY(3px);
+  box-shadow: 0px 0px 0px #7c7c7c;
 }

@@ -1,31 +1,36 @@
-import toast from "react-hot-toast";
 import css from "./SearchBar.module.css";
+import toast from "react-hot-toast";
 
-export const SearchBar = ({ onSearch }) => {
-  const handleSubmit = (e) => {
+export const SearchForm = ({ onSearch }) => {
+  const hendelSubmit = (e) => {
     e.preventDefault();
+    onSearch(e.target.elements.query.value);
 
     if (e.target.elements.query.value.trim() === "") {
-      toast.error("Enter your search query 👈");
+      toast.error("EMPTY STRING");
       return;
     }
-
-    onSearch(e.target.elements.query.value);
     e.target.reset();
   };
+
+  const handleScrol = (e) => {
+    console.dir(e);
+  };
+
   return (
-    <header className={css.header}>
-      <form onSubmit={handleSubmit} className={css.form}>
-        <input
-          className={css.input}
-          type="text"
-          name="query"
-          placeholder="Search images and photos"
-        />
-        <button className={css.button} type="submit">
-          Search
-        </button>
-      </form>
-    </header>
+    <>
+      <header onScrollCapture={handleScrol} className={css.headerBox}>
+        <form className={css.headerForm} onSubmit={hendelSubmit}>
+          <input
+            type="text"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+            name="query"
+          />
+          <button type="submit">Search</button>
+        </form>
+      </header>
+    </>
   );
 };
