@@ -1,6 +1,6 @@
 import css from "./App.module.css";
 
-import { SearchForm } from "./SearchForm/SearchForm";
+import { SearchForm } from "./SearchBar/SearchBar";
 import { useEffect, useState } from "react";
 import { ImageGallery } from "./ImageGallery/ImageGallery";
 import { Loader } from "./Loader/Loader";
